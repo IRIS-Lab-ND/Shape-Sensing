@@ -1,0 +1,26 @@
+absl-py==1.0.0
+astor==0.8.1
+bleach==1.5.0
+cycler==0.11.0
+fonttools==4.33.3
+gast==0.5.3
+grpcio==1.46.3
+html5lib==0.9999999
+importlib-metadata==4.11.4
+kiwisolver==1.4.2
+libopencv==0.0.1
+Markdown==3.3.7
+matplotlib==3.5.2
+numpy==1.22.4
+opencv-python==4.5.5.64
+packaging==21.3
+Pillow==9.1.1
+protobuf==3.20.1
+pyparsing==3.0.9
+python-dateutil==2.8.2
+six==1.16.0
+tensorboard==1.8.0
+tensorflow @ https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
+termcolor==1.1.0
+Werkzeug==2.1.2
+zipp==3.8.0
