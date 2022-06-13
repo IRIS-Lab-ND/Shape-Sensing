@@ -25,13 +25,14 @@ def onMouse(event, x, y, flag, param):
 		return
 
 
-cap = cv2.VideoCapture('media/video5.mp4')
-cv2.namedWindow('window')
-cv2.setMouseCallback('window', onMouse)
 
 
 
 def trackPoint():
+
+	cap = cv2.VideoCapture('media/video5.mp4')
+	cv2.namedWindow('window')
+	cv2.setMouseCallback('window', onMouse)
 
 	global k	
 	pointData = []
@@ -88,11 +89,25 @@ def trackPoint():
 
 	vinePositionData.append(pointData)
 	writeData(vinePositionData)
+
+	k = 0
+	
+	cap.release()
 	
 
 def main():
-	trackPoint()
-	cap.release()
+	print()
+	print("A window will pop up. Wait for a few seconds and then click the point you wish to track.")
+	time.sleep(1)
+	
+	cont = True
+
+	while cont:
+		trackPoint()
+		cont_choice = input("Track more points? (y/n) ")
+		if (cont_choice.lower() != 'y'):
+			cont = False
+
 
 
 if __name__ == '__main__':

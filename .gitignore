@@ -1,4 +1,6 @@
 .DS_Store
+data.tsv
+.external_shape_sensing.py.swp
 
 
 # Byte-compiled / optimized / DLL files
