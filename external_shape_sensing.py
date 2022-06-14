@@ -6,10 +6,11 @@ import time
 
 k = 0
 vinePositionData = []
+total_frame_count = 0
 
 
 def writeData(data):
-	with open('data.tsv', 'wt') as out_file:
+	with open('data.tsv', 'a') as out_file:
 	    tsv_writer = csv.writer(out_file, delimiter='\t')
 	    tsv_writer.writerows(data)
 
@@ -24,23 +25,25 @@ def onMouse(event, x, y, flag, param):
 
 
 
-def trackPoint():
+def trackPoint(video_filename):
 
-	cap = cv2.VideoCapture('media/video5.mp4')
+	cap = cv2.VideoCapture(video_filename)
 	cv2.namedWindow('window')
 	cv2.setMouseCallback('window', onMouse)
 
-	global k	
-	pointData = []
-	frame_num = 0
+	global k
+	global total_frame_count	
+	pointData = [None] * (total_frame_count + 1)
+	pointData[0] = "Point"
+	idx = 0
 
 	while True:
-		time.sleep(0.1)
 		ret, frame = cap.read()
 		
-		frame_num += 1
+		idx += 1
 
 		cv2.imshow('window', frame)
+		time.sleep(0.1)
 	
 		if cv2.waitKey(1) & 0xFF == 27 or k==1:
 			old_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -52,8 +55,7 @@ def trackPoint():
 	
 	while True:
 		ret, frame_new = cap.read()
-		frame_num += 1
-	
+		idx += 1 
 		if not ret:
 			break
 	
@@ -67,10 +69,10 @@ def trackPoint():
 		cv2.circle(frame_new, (new_x,new_y), 10, (0,255,0), 5)
 		cv2.imshow('tracking', frame_new)
 		
-		print('frame: {}'.format(frame_num))
+		print('frame: {}'.format(idx))
 		print('x:{}	y:{}'.format(new_x, new_y))	
 		#print('k:{}'.format(k))
-		pointData.append([new_x,new_y])
+		pointData[idx] = [new_x,new_y]
 	
 		old_gray = new_gray.copy()
 		old_points = new_points.copy()
@@ -87,17 +89,33 @@ def trackPoint():
 		print("Track not added.")
 	else:
 		vinePositionData.append(pointData)
-		writeData(vinePositionData)
 		print("Track added.")
 	print()
 
 	k = 0
 	
 	cap.release()
-	
+
+
+
+
+def populateFrameColumns(video_filename):
+	global total_frame_count
+	cap_temp = cv2.VideoCapture(video_filename)
+	total_frame_count = int(cap_temp.get(cv2.CAP_PROP_FRAME_COUNT))
+	row = [i for i in range(0,total_frame_count+1)]
+	row[0] = None
+	with open('data.tsv', 'wt') as out_file:
+		tsv_writer = csv.writer(out_file, delimiter='\t')
+		tsv_writer.writerow(row)
+
 
 
 def main():
+	
+	video_filename = 'media/video.mp4'
+	populateFrameColumns(video_filename)
+
 
 	print()
 	print("A window will pop up. Wait for a few seconds and then click the point you wish to track.")
@@ -105,13 +123,14 @@ def main():
 	
 	cont = True
 	while cont:
-		trackPoint()
+		trackPoint(video_filename)
 		cont_choice = input("Track more points? (y/n) ")
 		print()
 		if (cont_choice.lower() != 'y'):
 			cont = False
 
-
+	writeData(vinePositionData)
 
 if __name__ == '__main__':
 	main()
+
