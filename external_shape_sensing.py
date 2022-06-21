@@ -4,9 +4,11 @@ import numpy as np
 import time
 
 
+
 k = 0
 vinePositionData = []
 total_frame_count = 0
+
 
 
 def writeData(data):
@@ -98,7 +100,6 @@ def trackPoint(video_filename):
 
 
 
-
 def populateFrameColumns(video_filename):
 	global total_frame_count
 	cap_temp = cv2.VideoCapture(video_filename)
@@ -131,6 +132,6 @@ def main():
 
 	writeData(vinePositionData)
 
+
 if __name__ == '__main__':
 	main()
-

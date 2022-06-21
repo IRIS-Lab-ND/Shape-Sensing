@@ -1,7 +1,6 @@
 .DS_Store
 data.tsv
-.external_shape_sensing.py.swp
-
+*.swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
