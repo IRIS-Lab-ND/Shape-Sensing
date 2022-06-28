@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import time
 
-
+from calibration import pixels_per_cm
 
 k = 0
 vinePositionData = []
@@ -39,11 +39,9 @@ def trackPoint(video_filename):
 	pointData[0] = "Point"
 	idx = 0
 
+	ret, frame = cap.read()
 	while True:
-		ret, frame = cap.read()
 		
-		idx += 1
-
 		cv2.imshow('window', frame)
 		time.sleep(0.1)
 	

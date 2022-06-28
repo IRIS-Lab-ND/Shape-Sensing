@@ -63,7 +63,6 @@ def automaticallyCalibrate():
 		vertices.append(point)
 
 	vertices = np.asarray(vertices, dtype=np.int32)
-	print(vertices)
 	np_pts = vertices.reshape((-1,1,2))
 	cv2.polylines(image, [np_pts], isClosed=True, color=(255,255,0), thickness=5)
 
