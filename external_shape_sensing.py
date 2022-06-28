@@ -4,6 +4,8 @@ import numpy as np
 import time
 
 from calibration import pixels_per_cm
+from calibration import origin_x
+from calibration import origin_y
 
 k = 0
 vinePositionData = []
@@ -67,12 +69,22 @@ def trackPoint(video_filename):
 		new_y = int(new_points.ravel()[1])
 	
 		cv2.circle(frame_new, (new_x,new_y), 10, (0,255,0), 5)
+		cv2.circle(frame_new, (origin_x,origin_y), 10, (0,255,0), 5)
+		cv2.line(frame_new, pt1=(new_x, new_y), pt2=(origin_x, origin_y), color=(102,255,255), thickness = 3)
 		cv2.imshow('tracking', frame_new)
 		
 		print('frame: {}'.format(idx))
-		print('x:{}	y:{}'.format(new_x, new_y))	
-		#print('k:{}'.format(k))
-		pointData[idx] = [new_x,new_y]
+		print('absolute x pixels:{}	absolute y pixels:{}'.format(new_x, new_y))	
+
+		dist_to_origin_x_pixels = origin_x - new_x
+		dist_to_origin_y_pixels = origin_y - new_y
+		print('adjusted x pixels:{}	adjusted y pixels:{}'.format(dist_to_origin_x_pixels, dist_to_origin_y_pixels))
+
+		dist_to_origin_x_scaled = dist_to_origin_x_pixels / pixels_per_cm
+		dist_to_origin_y_scaled = dist_to_origin_y_pixels / pixels_per_cm
+		print('scaled x distance: {}cm		scaled y distance:{}cm'.format(dist_to_origin_x_scaled, dist_to_origin_y_scaled))
+
+		pointData[idx] = [dist_to_origin_x_scaled, dist_to_origin_y_scaled]
 	
 		old_gray = new_gray.copy()
 		old_points = new_points.copy()

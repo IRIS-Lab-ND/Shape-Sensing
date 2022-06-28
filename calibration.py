@@ -10,6 +10,8 @@ import cv2
 
 filename = 'media/video.mp4'
 pixels_per_cm = 0
+origin_x = 0
+origin_y = 0
 
 
 
@@ -32,6 +34,8 @@ def findArucoMarker(image, markerSize=5, totalMarkers=100, draw=True):
 def automaticallyCalibrate():
 
 	global pixels_per_cm
+	global origin_x
+	global origin_y
 
 	# dimensions of aruco printout are 7x7 cm so perimeter is 7*4 cm
 	true_aruco_perimeter = 7 * 4
@@ -63,6 +67,9 @@ def automaticallyCalibrate():
 		vertices.append(point)
 
 	vertices = np.asarray(vertices, dtype=np.int32)
+	print(vertices)
+	origin_x = vertices[0][0]
+	origin_y = vertices[0][1]
 	np_pts = vertices.reshape((-1,1,2))
 	cv2.polylines(image, [np_pts], isClosed=True, color=(255,255,0), thickness=5)
 
