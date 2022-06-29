@@ -8,13 +8,14 @@ from calibration import origin_x
 from calibration import origin_y
 
 k = 0
-vinePositionData = []
+vine_position_data_x = []
+vine_position_data_y = []
 total_frame_count = 0
 
 
 
-def writeData(data):
-	with open('data.tsv', 'a') as out_file:
+def writeData(data, data_filename):
+	with open(data_filename,'a') as out_file:
 	    tsv_writer = csv.writer(out_file, delimiter='\t')
 	    tsv_writer.writerows(data)
 
@@ -37,8 +38,10 @@ def trackPoint(video_filename):
 
 	global k
 	global total_frame_count	
-	pointData = [None] * (total_frame_count + 1)
-	pointData[0] = "Point"
+	point_data_x = [None] * (total_frame_count + 1)
+	point_data_y = [None] * (total_frame_count + 1)
+	point_data_x[0] = "Point"
+	point_data_y[0] = "Point"
 	idx = 0
 
 	ret, frame = cap.read()
@@ -84,7 +87,8 @@ def trackPoint(video_filename):
 		dist_to_origin_y_scaled = dist_to_origin_y_pixels / pixels_per_cm
 		print('scaled x distance: {}cm		scaled y distance:{}cm'.format(dist_to_origin_x_scaled, dist_to_origin_y_scaled))
 
-		pointData[idx] = [dist_to_origin_x_scaled, dist_to_origin_y_scaled]
+		point_data_x[idx] = dist_to_origin_y_scaled
+		point_data_y[idx] = dist_to_origin_y_scaled
 	
 		old_gray = new_gray.copy()
 		old_points = new_points.copy()
@@ -100,7 +104,8 @@ def trackPoint(video_filename):
 	if (add_choice.lower() != 'y'):
 		print("Track not added.")
 	else:
-		vinePositionData.append(pointData)
+		vine_position_data_x.append(point_data_x)
+		vine_position_data_y.append(point_data_y)
 		print("Track added.")
 	print()
 
@@ -116,7 +121,10 @@ def populateFrameColumns(video_filename):
 	total_frame_count = int(cap_temp.get(cv2.CAP_PROP_FRAME_COUNT))
 	row = [i for i in range(0,total_frame_count+1)]
 	row[0] = None
-	with open('data.tsv', 'wt') as out_file:
+	with open('pos_x.tsv', 'wt') as out_file:
+		tsv_writer = csv.writer(out_file, delimiter='\t')
+		tsv_writer.writerow(row)
+	with open('pos_y.tsv', 'wt') as out_file:
 		tsv_writer = csv.writer(out_file, delimiter='\t')
 		tsv_writer.writerow(row)
 
@@ -140,7 +148,8 @@ def main():
 		if (cont_choice.lower() != 'y'):
 			cont = False
 
-	writeData(vinePositionData)
+	writeData(vine_position_data_x, 'pos_x.tsv')
+	writeData(vine_position_data_y, 'pos_y.tsv')
 
 
 if __name__ == '__main__':
