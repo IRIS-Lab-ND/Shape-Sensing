@@ -1,5 +1,5 @@
 .DS_Store
-data.tsv
+*.tsv
 *.swp
 
 # Byte-compiled / optimized / DLL files
