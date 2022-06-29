@@ -87,7 +87,7 @@ def trackPoint(video_filename):
 		dist_to_origin_y_scaled = dist_to_origin_y_pixels / pixels_per_cm
 		print('scaled x distance: {}cm		scaled y distance:{}cm'.format(dist_to_origin_x_scaled, dist_to_origin_y_scaled))
 
-		point_data_x[idx] = dist_to_origin_y_scaled
+		point_data_x[idx] = dist_to_origin_x_scaled
 		point_data_y[idx] = dist_to_origin_y_scaled
 	
 		old_gray = new_gray.copy()
