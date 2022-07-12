@@ -8,11 +8,13 @@ import cv2
 
 
 
-filename = 'media/video.mp4'
-pixels_per_cm = 0
-origin_x = 0
-origin_y = 0
+pixels_per_cm_top = 0
+origin_x_top = 0
+origin_y_top = 0
 
+pixels_per_cm_side = 0
+origin_x_side = 0
+origin_y_side = 0
 
 
 #-----AUTOMATIC CALIBRATION USING ARUCO MARKER-----#
@@ -31,20 +33,23 @@ def findArucoMarker(image, markerSize=5, totalMarkers=100, draw=True):
 	return bboxs, idx, rejected
 
 
-def automaticallyCalibrate():
+def automaticallyCalibrate(filename):
 
-	global pixels_per_cm
-	global origin_x
-	global origin_y
+	global pixels_per_cm_top
+	global origin_x_top
+	global origin_y_top
+	global pixles_per_cm_side
+	global origin_x_side
+	global origin_y_side
 
-	# dimensions of aruco printout are 7x7 cm so perimeter is 7*4 cm
-	true_aruco_perimeter = 7 * 4
+	# dimensions of aruco printout are 7*7 cm so perimeter is 28 cm
+	true_aruco_perimeter = 28
 
 	cap = cv2.VideoCapture(filename)
 	ret, image = cap.read()
 
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	gray = cv2.GaussianBlur(gray, (7,7), 0)
+	gray = cv2.GaussianBlur(gray, (5,5), 0)
 
 	edged = cv2.Canny(gray, 50, 100)
 	edged = cv2.dilate(edged, None, iterations=1)
@@ -68,17 +73,28 @@ def automaticallyCalibrate():
 
 	vertices = np.asarray(vertices, dtype=np.int32)
 	print(vertices)
-	origin_x = vertices[0][0]
-	origin_y = vertices[0][1]
+	if ('top' in filename.lower()):
+		print("TOP VIEW")
+		origin_x_top = vertices[2][0]
+		origin_y_top = vertices[2][1]
+	else:
+		print("SIDE VIEW")
+		origin_x_side = vertices[1][0]
+		origin_y_side = vertcies[1][1]
 	np_pts = vertices.reshape((-1,1,2))
 	cv2.polylines(image, [np_pts], isClosed=True, color=(255,255,0), thickness=5)
 
 	if len(arucofound[0])!=0:
 		virtual_aruco_perimeter = cv2.arcLength(arucofound[0][0][0], True)
 		print("marker perimeter: {} pixels".format(virtual_aruco_perimeter))
-		pixels_per_cm  = virtual_aruco_perimeter / true_aruco_perimeter
-		print("{} pixels per cm".format(pixels_per_cm))
-		return 1
+		if ('top' in filename.lower()):
+			pixels_per_cm_top = virtual_aruco_perimeter / true_aruco_perimeter
+			print("{} pixels per cm from top camera".format(pixels_per_cm_top))
+			return 1
+		else:
+			pixels_per_cm_side = virtual_aruco_perimeter / true_aruco_perimeter
+			print("{} pixels per cm from side camera".format(pixels_per_cm_side))
+			return 1
 	else:
 		print("Automatic calibration failed")
 		return 0
@@ -89,9 +105,9 @@ def automaticallyCalibrate():
 
 #-----MANUAL CALIBRATION-----#
 
-all_points = []
-cap = cv2.VideoCapture(filename)
-ret, image = cap.read()
+#all_points = []
+#cap = cv2.VideoCapture(filename)
+#ret, image = cap.read()
 
 def selectPoints(event, x, y, flags, param):
 	global all_points
@@ -135,13 +151,23 @@ def manuallyCalibrate():
 
 #-----MAIN DRIVER-----#
 def calibrate():
+	filename = 'media/vine_top.mp4'
 	try:
-		automaticallyCalibrate()
+		automaticallyCalibrate(filename)
 	except:
 		print("Automatic calibration failed")
 		print("Opening manual calibration")
 		manuallyCalibrate()
-	print("CALIBRATION COMPLETE: {} pixels per cm.".format(pixels_per_cm))
+	print("TOP CALIBRATION COMPLETE: {} pixels per cm.".format(pixels_per_cm_top))
 
+	print()
 
+	filename = 'media/vine_side.mp4'
+	try:
+		automaticallyCalibrate(filename)
+	except:
+		print("Automatic calibration failed")
+		print("Opening manual calibration")
+		manuallyCalibrate()
+	print("SIDE CALIBRATION COMPLETE: {} pixels per cm.".format(pixels_per_cm_top))
 calibrate()
