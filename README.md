@@ -55,4 +55,5 @@ and follow the instructions.
 
 
 ## Notes
- - The python program writes position data to a `.tsv` file, which can then be animated by using a MATLAB script.
+ - The python script generates a rotation and transformation matrix for converting LUNA data to PhaseSpace coordinates.
+ - The MATLAB script is then used to convert all LUNA data to PhaseSpace and plot the specific frames of the time-synced data.
