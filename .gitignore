@@ -73,3 +73,6 @@ ENV/
 env.bak/
 venv.bak/
 shape_sensing_virtualenv/
+
+# Misc Files
+rover_aruco.py

@@ -1,18 +1,20 @@
+%% Written by Dr. Margaret Coad
+
 %% This code reads in a file of strain data and plots 3D fiber bundle shape
-clear
+clear all
 close all
 
 %% Variables
 % Data handling
-FILENAME1 = "ODiSI 6000 Test_2022-07-12_19-22-12_ch1_full.tsv"; % file for first sensor
+FILENAME1 = "ODiSI 6000 Test_2023-03-27_14-37-23_ch1_full.tsv"; % file for first sensor
 FILETYPE1 = 'text'; % use 'spreadsheet' for .xlsx and 'text' for .tsv
-FILENAME2 = "ODiSI 6000 Test_2022-07-12_19-22-12_ch2_full.tsv"; % file for second sensor
+FILENAME2 = "ODiSI 6000 Test_2023-03-27_14-37-23_ch3_full.tsv"; % file for second sensor
 FILETYPE2 = 'text'; % use 'spreadsheet' for .xlsx and 'text' for .tsv
-FILENAME3 = "ODiSI 6000 Test_2022-07-12_19-22-12_ch3_full.tsv"; % file for third sensor
+FILENAME3 = "ODiSI 6000 Test_2023-03-27_14-37-23_ch4_full.tsv"; % file for third sensor
 FILETYPE3 = 'text'; % use 'spreadsheet' for .xlsx and 'text' for .tsv
 FIRST_TIME = 32; % first row to plot data for
-FIRST_GAGE = 3; % first column to plot data for
-LAST_GAGE = 1854; % last column to plot data for
+FIRST_GAGE = 1531; % first column to plot data for
+LAST_GAGE = 1853; % last column to plot data for
 DATA_RATE = 10.4167; % number of frames per second to play movie
 
 x_vals_all = [];
@@ -163,16 +165,9 @@ for time = FIRST_TIME:last_time
 
 end
 
-writematrix(x_vals_all,"x_2.txt")
-writematrix(y_vals_all,"y_2.txt")
-writematrix(z_vals_all,"z_2.txt")
+writematrix(x_vals_all,"x_luna.csv")
+writematrix(y_vals_all,"y_luna.csv")
+writematrix(z_vals_all,"z_luna.csv")
 
-% writetable(x_vals_all)
-% fprintf(file_ID_x, '%f,', x_vals_all);
-% fclose(file_ID_x);
-% fprintf(file_ID_y, '%f,', y_vals_all);
-% fclose(file_ID_y);
-% fprintf(file_ID_z, '%f,', z_vals_all);
-% fclose(file_ID_z);
 close(v);
 disp(frame_count)
